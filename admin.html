@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8eceb">
+  <title>Administración · Meli Nails</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Italianno&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./supabase-config.js"></script>
+  <style>
+    :root{--rose:#c87389;--rose-dark:#a8516a;--rose-soft:#faeeee;--paper:#fffaf7;--ink:#33292b;--muted:#8d7b7c;--line:#eddddd;--green:#4f8068;--amber:#a87531;--red:#ae5260;--display:"Manrope",sans-serif;--body:"DM Sans",sans-serif;--shadow:0 16px 45px rgba(101,57,68,.08)}
+    *{box-sizing:border-box}body{margin:0;background:#f4e5e4;color:var(--ink);font-family:var(--body);min-height:100vh}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}.hidden{display:none!important}
+    .login-wrap{min-height:100vh;display:grid;place-items:center;padding:22px}.login-card{width:min(100%,430px);background:var(--paper);padding:36px;border:1px solid #f1dedf;border-radius:25px;box-shadow:var(--shadow)}.brand{font:47px/.8 "Italianno",cursive;color:var(--rose-dark);text-align:center;margin:0}.brand-sub{text-align:center;font:800 9px var(--display);letter-spacing:3px;color:#806b6d;margin:10px 0 30px}.login-card h1{font:800 24px var(--display);letter-spacing:-.05em;margin:0 0 8px;text-align:center}.login-card>p{text-align:center;color:var(--muted);font-size:12px;line-height:1.6;margin:0 0 24px}.field{display:grid;gap:7px;margin-bottom:15px}.field label{font-size:11px;font-weight:700;color:#705d60}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px 13px;outline:none;color:var(--ink);font-size:13px}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--rose);box-shadow:0 0 0 3px #c873891c}.btn{border:0;border-radius:999px;padding:12px 19px;background:var(--rose);color:white;font-size:12px;font-weight:800;box-shadow:0 8px 20px #bf6e8330;transition:.18s}.btn:hover{background:var(--rose-dark);transform:translateY(-1px)}.btn.secondary{background:#fff4f3;color:var(--rose-dark);border:1px solid var(--line);box-shadow:none}.btn.dark{background:var(--ink);box-shadow:none}.btn.danger{background:#fff0f1;color:var(--red);border:1px solid #f1d4d8;box-shadow:none}.btn.full{width:100%}.btn.small{padding:8px 12px;font-size:10px}.hint{font-size:11px;line-height:1.6;color:var(--muted);padding:12px;background:#fff4f2;border-radius:12px;margin-top:16px}.error{color:var(--red);font-size:11px;line-height:1.5;margin:12px 0 0;min-height:16px}.config-warning{font-size:11px;line-height:1.6;background:#fff4df;border:1px solid #efdfbd;color:#765521;padding:13px;border-radius:12px;margin-bottom:18px}
+    .app{min-height:100vh;display:grid;grid-template-columns:245px 1fr;max-width:1600px;margin:0 auto;background:var(--paper);box-shadow:0 0 80px #9e68711a}.sidebar{background:#fff7f4;border-right:1px solid var(--line);padding:26px 17px;display:flex;flex-direction:column;min-height:100vh;position:sticky;top:0;height:100vh}.side-brand{padding:5px 15px 28px}.side-brand .brand{text-align:left;font-size:43px}.side-brand .brand-sub{text-align:left;margin:8px 0 0 3px}.side-label{font:800 9px var(--display);letter-spacing:2px;color:#ad8b8f;padding:10px 13px}.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;padding:12px 13px;display:flex;align-items:center;gap:12px;border-radius:12px;text-align:left;color:#7a686b;font-size:12px;font-weight:700}.nav button:hover{background:#fae9e9}.nav button.active{background:#f2d9dc;color:var(--rose-dark)}.nav-ico{width:20px;text-align:center;font-size:15px}.side-bottom{margin-top:auto;padding:15px 8px 0;border-top:1px solid var(--line)}.user-email{font-size:10px;color:var(--muted);padding:0 6px 12px;overflow-wrap:anywhere}.main{min-width:0;padding:30px clamp(18px,4vw,54px) 50px}.mobilebar{display:none}.topline{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:28px}.eyebrow{font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:800;color:var(--rose-dark)}h1,h2,h3,p{margin-top:0}.topline h1{font:800 clamp(25px,3vw,34px)/1.1 var(--display);letter-spacing:-.06em;margin:6px 0}.topline p{font-size:12px;color:var(--muted);margin:0}.top-actions{display:flex;gap:8px;align-items:center}.pill{padding:7px 10px;border-radius:999px;background:#eef6f0;color:var(--green);font-size:10px;font-weight:800}.panel-section{display:none}.panel-section.active{display:block;animation:fade .2s ease}@keyframes fade{from{opacity:.5;transform:translateY(4px)}to{opacity:1;transform:none}}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}.stat{padding:18px 19px;border:1px solid var(--line);border-radius:17px;background:#fff;box-shadow:0 7px 22px #71455008}.stat small{display:block;color:var(--muted);font-size:10px;font-weight:700}.stat strong{display:block;font:800 27px var(--display);letter-spacing:-.06em;margin:9px 0 2px}.stat span{font-size:10px;color:#a58f91}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 7px 22px #71455007;margin-bottom:17px;min-width:0}.card-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:15px}.card-head h2{font:800 16px var(--display);letter-spacing:-.04em;margin:0}.card-head p{font-size:10px;color:var(--muted);margin:5px 0 0}.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:680px}th{text-align:left;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#9b8588;padding:11px 10px;border-bottom:1px solid var(--line)}td{padding:12px 10px;border-bottom:1px solid #f4e9e8;font-size:11px;vertical-align:middle}tr:last-child td{border-bottom:0}.primary-cell{font-weight:800;color:#443639}.sub-cell{display:block;color:var(--muted);font-size:10px;margin-top:4px;font-weight:400}.status{border-radius:999px;padding:6px 9px;border:1px solid transparent;font-size:9px;font-weight:800}.status.pending{background:#fff6e8;border-color:#f1e1bf;color:#916624}.status.confirmed{background:#edf6ef;border-color:#d6e8d9;color:#4c805f}.status.completed{background:#f0effb;border-color:#dfddf4;color:#69629b}.status.cancelled,.status.rejected{background:#fff0f1;border-color:#f2d8dc;color:#a64e5c}.status.no_show{background:#f3eeee;border-color:#e5dada;color:#77686a}.status-select{border:1px solid var(--line);border-radius:9px;background:white;padding:7px 9px;font-size:10px;color:var(--ink)}.empty{padding:35px 15px;text-align:center;color:var(--muted);font-size:12px}.empty b{display:block;color:var(--ink);font-size:13px;margin-bottom:5px}.grid-two{display:grid;grid-template-columns:1fr 1fr;gap:17px}.quick-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.quick{padding:15px;border-radius:13px;border:1px solid var(--line);background:#fffaf8;text-align:left}.quick b{display:block;font:800 12px var(--display);margin-bottom:5px}.quick span{font-size:10px;color:var(--muted);line-height:1.5}.product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.product{border:1px solid var(--line);border-radius:15px;overflow:hidden;background:white;min-width:0}.product-img{height:145px;background:#f8e8e7;display:grid;place-items:center;color:#ba7d8a;overflow:hidden}.product-img img{width:100%;height:100%;object-fit:cover}.product-body{padding:12px}.product-body b{font:800 12px var(--display);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.product-body p{font-size:10px;color:var(--muted);margin:6px 0}.product-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.filters input,.filters select{border:1px solid var(--line);background:white;border-radius:999px;padding:10px 13px;font-size:11px;outline:none;color:var(--ink)}.filters input{min-width:210px}.modal-bg{position:fixed;inset:0;background:#34262a77;z-index:20;display:none;place-items:center;padding:16px}.modal-bg.open{display:grid}.modal{width:min(100%,650px);max-height:92vh;overflow:auto;background:var(--paper);border-radius:20px;padding:22px;box-shadow:0 20px 80px #20121755}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.modal-head h2{font:800 18px var(--display);margin:0}.close{border:0;background:#f8e9e9;width:32px;height:32px;border-radius:50%;font-size:18px;color:var(--rose-dark)}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 13px}.checkline{display:flex;align-items:center;gap:9px;font-size:11px;color:var(--muted);margin:8px 0 18px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;padding-top:10px}.toast{position:fixed;right:20px;bottom:20px;background:#34292c;color:white;padding:13px 17px;border-radius:12px;font-size:11px;box-shadow:var(--shadow);z-index:40;opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:none}.connection-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}.connection-step{border:1px solid var(--line);border-radius:14px;padding:15px}.connection-step strong{font:800 12px var(--display);display:block;margin-bottom:7px}.connection-step p{font-size:10px;color:var(--muted);line-height:1.6;margin:0}.code{display:block;white-space:pre-wrap;overflow-wrap:anywhere;background:#33292b;color:#f8e9e9;padding:14px;border-radius:12px;font:10px/1.6 ui-monospace,monospace;margin:12px 0}.muted{color:var(--muted);font-size:11px;line-height:1.6}
+
+    .booking-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.booking-actions .btn{white-space:nowrap}
+    .upload-drop{display:grid;grid-template-columns:116px 1fr;gap:14px;align-items:center;border:1.5px dashed #dfb8c0;border-radius:15px;padding:12px;background:#fff8f7;cursor:pointer;transition:.18s}.upload-drop.dragover{background:#fae9ec;border-color:var(--rose);transform:translateY(-1px)}.upload-drop:focus-within{outline:3px solid #c8738926}.image-preview{width:116px;height:116px;border-radius:11px;background:#f2e2e1;display:grid;place-items:center;overflow:hidden;color:#a56e7b;font-size:11px;text-align:center}.image-preview img{width:100%;height:100%;object-fit:cover}.upload-copy b{display:block;font:800 12px var(--display);margin-bottom:5px}.upload-copy span{font-size:10px;line-height:1.6;color:var(--muted);display:block}.upload-copy .btn{display:inline-block;margin-top:9px}.upload-help{font-size:10px;line-height:1.5;color:var(--muted);margin-top:6px}.editor-progress{font-size:11px;color:var(--rose-dark);font-weight:700;margin:8px 0;min-height:15px}
+    .product-img{height:185px}.product-body p{line-height:1.5}.product-badges{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.mini-badge{font-size:9px;border:1px solid var(--line);border-radius:999px;padding:4px 7px;color:var(--muted);background:#fff9f7}
+    @media(max-width:1050px){.stats{grid-template-columns:repeat(2,1fr)}.product-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:720px){.app{display:block}.sidebar{display:none}.mobilebar{display:flex;position:sticky;top:0;z-index:10;align-items:center;justify-content:space-between;background:#fff8f5;border-bottom:1px solid var(--line);padding:10px 15px}.mobilebar .brand{font-size:36px}.mobile-nav{display:flex;gap:4px;overflow:auto;background:#fff;padding:7px 10px;border-bottom:1px solid var(--line)}.mobile-nav button{border:0;background:transparent;padding:9px 12px;border-radius:999px;white-space:nowrap;font-size:10px;font-weight:800;color:#79696b}.mobile-nav button.active{background:#f3dfe1;color:var(--rose-dark)}.main{padding:22px 14px 40px}.topline{align-items:flex-start;margin-bottom:20px}.top-actions .pill{display:none}.stats{gap:9px}.stat{padding:14px}.stat strong{font-size:23px}.grid-two{grid-template-columns:1fr}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.product-img{height:120px}.card{padding:15px}.connection-grid{grid-template-columns:1fr}.filters input{min-width:0;flex:1}.quick-actions{grid-template-columns:1fr 1fr}}
+    @media(max-width:390px){.product-grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div id="loginScreen" class="login-wrap">
+    <section class="login-card">
+      <div class="brand">Meli Nails</div><div class="brand-sub">BEAUTY STUDIO · ADMIN</div>
+      <h1>Panel de administración</h1>
+      <p>Ingresá con la cuenta administradora de Meli Nails.</p>
+      <div id="configWarning" class="config-warning hidden"></div>
+      <form id="loginForm">
+        <div class="field"><label for="loginEmail">Correo electrónico</label><input id="loginEmail" type="email" autocomplete="username" placeholder="admin@melinails.com" required></div>
+        <div class="field"><label for="loginPassword">Contraseña</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Tu contraseña" required></div>
+        <button id="loginButton" class="btn full" type="submit">Ingresar al panel</button>
+        <div id="loginError" class="error" role="alert"></div>
+      </form>
+      <div class="hint">El acceso está restringido. La cuenta debe existir en Supabase Authentication y tener su <b>user_id</b> autorizado en la tabla <b>admins</b>.</div>
+    </section>
+  </div>
+
+  <div id="adminApp" class="app hidden">
+    <aside class="sidebar">
+      <div class="side-brand"><div class="brand">Meli Nails</div><div class="brand-sub">BEAUTY STUDIO · ADMIN</div></div>
+      <div class="side-label">GESTIÓN</div>
+      <nav class="nav" aria-label="Menú administrativo">
+        <button class="active" data-tab="dashboard"><span class="nav-ico">⌂</span>Resumen</button>
+        <button data-tab="bookings"><span class="nav-ico">▦</span>Solicitudes</button>
+        <button data-tab="designs"><span class="nav-ico">✧</span>Diseños</button>
+        <button data-tab="services"><span class="nav-ico">♡</span>Servicios</button>
+        <button data-tab="connection"><span class="nav-ico">⚙</span>Supabase</button>
+      </nav>
+      <div class="side-bottom"><div id="userEmail" class="user-email"></div><button id="logoutButton" class="btn secondary full">Cerrar sesión</button></div>
+    </aside>
+
+    <div class="mobilebar"><div class="brand">Meli Nails</div><button id="mobileLogout" class="btn secondary small">Salir</button></div>
+    <nav class="mobile-nav" aria-label="Menú móvil">
+      <button class="active" data-tab="dashboard">Resumen</button><button data-tab="bookings">Turnos</button><button data-tab="designs">Diseños</button><button data-tab="services">Servicios</button><button data-tab="connection">Supabase</button>
+    </nav>
+
+    <main class="main">
+      <header class="topline"><div><div class="eyebrow">Meli Nails · Beauty Studio</div><h1 id="pageTitle">Resumen general</h1><p id="pageSubtitle">Una mirada rápida a la actividad de tu negocio.</p></div><div class="top-actions"><span class="pill">● Conectado</span><button id="refreshButton" class="btn secondary small">↻ Actualizar</button></div></header>
+
+      <section id="section-dashboard" class="panel-section active">
+        <div class="stats">
+          <article class="stat"><small>Solicitudes pendientes</small><strong id="statPending">—</strong><span>Esperando confirmación</span></article>
+          <article class="stat"><small>Turnos confirmados</small><strong id="statConfirmed">—</strong><span>Reservas aceptadas</span></article>
+          <article class="stat"><small>Diseños activos</small><strong id="statDesigns">—</strong><span>En el catálogo público</span></article>
+          <article class="stat"><small>Servicios activos</small><strong id="statServices">—</strong><span>Disponibles para reservar</span></article>
+        </div>
+        <div class="grid-two">
+          <div class="card"><div class="card-head"><div><h2>Solicitudes recientes</h2><p>Los últimos pedidos recibidos desde la web.</p></div><button class="btn secondary small" data-go="bookings">Ver todas</button></div><div id="recentBookings"></div></div>
+          <div class="card"><div class="card-head"><div><h2>Accesos rápidos</h2><p>Administrá el contenido del sitio.</p></div></div><div class="quick-actions"><button class="quick" data-go="designs"><b>＋ Agregar diseño</b><span>Publicá un nuevo diseño con precio e imagen.</span></button><button class="quick" data-go="services"><b>＋ Agregar servicio</b><span>Actualizá tratamientos y precios.</span></button><button class="quick" data-go="bookings"><b>▦ Revisar turnos</b><span>Confirmá o actualizá solicitudes.</span></button><button class="quick" data-go="connection"><b>✓ Catálogo conectado</b><span>Los datos provienen directamente de tu base productiva.</span></button></div><p class="muted" style="margin:13px 0 0">No se importan datos de muestra automáticamente.</p></div>
+        </div>
+      </section>
+
+      <section id="section-bookings" class="panel-section">
+        <div class="card"><div class="card-head"><div><h2>Solicitudes de turnos</h2><p>Las solicitudes se guardan antes de abrir WhatsApp.</p></div><div class="filters"><select id="bookingFilter"><option value="all">Todos los estados</option><option value="pending">Pendientes</option><option value="confirmed">Confirmados</option><option value="completed">Completados</option><option value="rejected">Rechazados</option><option value="cancelled">Cancelados</option><option value="no_show">Ausentes</option></select><button id="addTimeBlock" class="btn secondary small" type="button">＋ Bloquear horario</button></div></div><div id="bookingsTable" class="table-wrap"></div></div>
+        <div class="card"><div class="card-head"><div><h2>Horarios bloqueados</h2><p>Registrá turnos tomados por WhatsApp, descansos o períodos en los que no vas a atender. No aparecerán como disponibles en la web.</p></div></div><div id="timeBlocksTable" class="table-wrap"></div></div>
+      </section>
+
+      <section id="section-designs" class="panel-section">
+        <div class="card"><div class="card-head"><div><h2>Catálogo de diseños</h2><p>Los diseños activos se muestran en el index público.</p></div><button id="addDesign" class="btn">＋ Nuevo diseño</button></div><div class="filters" style="margin-bottom:15px"><input id="designSearch" type="search" placeholder="Buscar diseño o categoría..."><select id="designFilter"><option value="all">Todos</option><option value="active">Activos</option><option value="inactive">Archivados</option></select></div><div id="designGrid" class="product-grid"></div></div>
+      </section>
+
+      <section id="section-services" class="panel-section">
+        <div class="card"><div class="card-head"><div><h2>Servicios y precios</h2><p>Administrá los tratamientos disponibles para reservar.</p></div><button id="addService" class="btn">＋ Nuevo servicio</button></div><div id="servicesTable" class="table-wrap"></div></div>
+      </section>
+
+      <section id="section-connection" class="panel-section">
+        <div class="card"><div class="card-head"><div><h2>Estado de la conexión</h2><p>Configuración compartida entre admin.html e index.html. Proyecto Supabase real de Meli Nails.</p></div><span id="connectionBadge" class="pill">Verificando</span></div><p id="connectionDetails" class="muted">Comprobando conexión con Supabase...</p></div>
+        <div class="card"><div class="card-head"><div><h2>Configuración inicial</h2><p>Pasos necesarios para publicar el panel.</p></div></div><div class="connection-grid"><div class="connection-step"><strong>01 · Crear el proyecto</strong><p>Proyecto conectado: vfkalbukfiyprugqepcy. Se utiliza la clave publishable pública.</p></div><div class="connection-step"><strong>02 · Ejecutar el esquema</strong><p>El proyecto ya tiene su esquema productivo. No ejecutes un esquema alternativo ni crees tablas meli_* duplicadas.</p></div><div class="connection-step"><strong>03 · Autorizar al administrador</strong><p>Creá el usuario en Authentication → Users y luego el usuario debe tener una fila en <b>admins</b> asociada por user_id.</p></div><div class="connection-step"><strong>04 · Compartir configuración</strong><p>Completá <b>supabase-config.js</b> y publicá todos los archivos en el mismo origen/carpeta.</p></div></div></div>
+        <div class="card"><div class="card-head"><div><h2>Tablas esperadas</h2><p>El panel utiliza las tablas existentes del proyecto.</p></div></div><span class="code">admins\nservices\ndesigns\nbookings\nclients\nbusiness_settings\nworking_hours</span><p class="muted">La clave publishable/anon puede estar en el frontend siempre que las políticas RLS estén activas. No uses nunca la clave service_role en estos archivos.</p></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="modalBg" class="modal-bg"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-head"><h2 id="modalTitle">Editar</h2><button id="modalClose" class="close" type="button" aria-label="Cerrar">×</button></div><form id="editorForm"></form></div></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>const CONFIG=window.MELI_SUPABASE_CONFIG||{};
+const CONFIG_OK=/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(String(CONFIG.url||'').trim())&&String(CONFIG.anonKey||'').trim().length>20;
+let db=null,currentUser=null,isAdmin=false,activeTab='dashboard',allBookings=[],allDesigns=[],allServices=[],allTimeBlocks=[],toastTimer=null;
+const $=id=>document.getElementById(id);
+const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const money=value=>'$'+Number(value||0).toLocaleString('es-AR');
+const dateLabel=value=>{if(!value)return '—';const d=new Date(value);return Number.isNaN(d.getTime())?value:new Intl.DateTimeFormat('es-AR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'America/Argentina/Buenos_Aires'}).format(d)};
+const statusLabel=value=>({pending:'Pendiente',confirmed:'Confirmado',rejected:'Rechazado',completed:'Completado',cancelled:'Cancelado',no_show:'Ausente'}[value]||value);
+function toast(message){$('toast').textContent=message;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3000)}
+function showLogin(message=''){$('loginScreen').classList.remove('hidden');$('adminApp').classList.add('hidden');$('loginError').textContent=message}
+function showApp(){$('loginScreen').classList.add('hidden');$('adminApp').classList.remove('hidden');$('userEmail').textContent=currentUser?.email||''}
+function setConnection(state,detail){$('connectionBadge').textContent=state;$('connectionDetails').textContent=detail}
+async function initialize(){
+ if(!CONFIG_OK||!window.supabase?.createClient){$('configWarning').classList.remove('hidden');$('configWarning').textContent='No se pudo cargar la configuración compartida o la librería de Supabase.';$('loginButton').disabled=true;setConnection('Sin configurar','Revisá supabase-config.js y el CDN de Supabase.');return;}
+ db=window.supabase.createClient(CONFIG.url.trim(),CONFIG.anonKey.trim(),{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+ setConnection('Conectando','Conectando con vfkalbukfiyprugqepcy...');
+ const {data,error}=await db.auth.getSession();if(error)console.warn(error);
+ if(data?.session)await activateAdmin(data.session);
+ db.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){currentUser=null;isAdmin=false;showLogin()}else if(session&&!isAdmin)setTimeout(()=>activateAdmin(session),0)});
+ $('loginButton').disabled=false;
+}
+async function activateAdmin(session){
+ if(!db||!session?.user)return;currentUser=session.user;setConnection('Verificando','Comprobando permiso administrativo...');
+ const {data,error}=await db.from('admins').select('user_id').eq('user_id',currentUser.id).maybeSingle();
+ if(error){console.error(error);showLogin('No se pudo validar el administrador en la tabla admins: '+error.message);setConnection('Error','Revisá RLS y la membresía de administrador.');return;}
+ if(!data){await db.auth.signOut();showLogin('Tu usuario inició sesión, pero no está autorizado en admins.');setConnection('Sin autorización','Agregá su user_id a la tabla admins desde Supabase.');return;}
+ isAdmin=true;showApp();setConnection('Conectado','Sesión autenticada y autorizada.');await loadAll();
+}
+$('loginForm').addEventListener('submit',async event=>{event.preventDefault();if(!db)return;const button=$('loginButton');button.disabled=true;button.textContent='Ingresando...';$('loginError').textContent='';const {data,error}=await db.auth.signInWithPassword({email:$('loginEmail').value.trim(),password:$('loginPassword').value});button.disabled=false;button.textContent='Ingresar al panel';if(error){$('loginError').textContent=error.message;return;}await activateAdmin(data.session)});
+async function logout(){if(db)await db.auth.signOut();currentUser=null;isAdmin=false;showLogin()}
+$('logoutButton').addEventListener('click',logout);$('mobileLogout').addEventListener('click',logout);
+async function loadAll(){
+ if(!isAdmin||!db)return;
+ const [b,d,s,t]=await Promise.all([
+  db.from('bookings').select('*,clients(full_name,phone)').order('starts_at',{ascending:false}),
+  db.from('designs').select('*').order('created_at',{ascending:false}),
+  db.from('services').select('*').order('sort_order',{ascending:true}),
+  db.from('time_blocks').select('*').order('starts_at',{ascending:true})
+ ]);
+ const error=b.error||d.error||s.error||t.error;if(error){console.error(error);toast('Error al cargar datos: '+error.message);setConnection('Error de consulta',error.message);return;}
+ allBookings=(b.data||[]).map(row=>{const serviceNames=Array.isArray(row.service_names)&&row.service_names.length?row.service_names.filter(Boolean):(row.service_name&&row.service_name!=='Diseño independiente'?[row.service_name]:[]);const optionName=[...serviceNames,...(!serviceNames.length&&row.design_name?[`Diseño: ${row.design_name}`]:row.design_name?[row.design_name]:[])].filter(Boolean).join(' + ')||row.service_name||'Opción sin nombre';return {...row,client_name:row.client_name||row.clients?.full_name||'Cliente',client_phone:row.clients?.phone||'',option_name:optionName,booking_date:row.starts_at,booking_time:new Intl.DateTimeFormat('es-AR',{hour:'2-digit',minute:'2-digit',timeZone:'America/Argentina/Buenos_Aires'}).format(new Date(row.starts_at)),total_price:Number(row.price||0),deposit:row.deposit_amount,client_note:row.client_notes,active:true}});
+ allDesigns=(d.data||[]).map(row=>({...row,active:row.is_available,price:Number(row.price||0),duration_min:Number(row.duration_min||60)}));
+ allServices=(s.data||[]).map(row=>({...row,active:row.is_active,detail:`${row.description||''}${row.duration_min?' · '+row.duration_min+' min':''}`,price:Number(row.price||0)}));
+ allTimeBlocks=t.data||[];
+ setConnection('Conectado','Lectura actualizada: '+new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}));renderDashboard();renderBookings();renderDesigns();renderServices();renderTimeBlocks();
+}
+$('refreshButton').addEventListener('click',loadAll);
+function goTab(tab){activeTab=tab;document.querySelectorAll('[data-tab]').forEach(el=>el.classList.toggle('active',el.dataset.tab===tab));document.querySelectorAll('.panel-section').forEach(el=>el.classList.toggle('active',el.id==='section-'+tab));const labels={dashboard:['Resumen general','Una mirada rápida a la actividad de tu negocio.'],bookings:['Solicitudes de turnos','Revisá y administrá las reservas registradas.'],designs:['Catálogo de diseños','Gestioná los diseños y sus adicionales.'],services:['Servicios y precios','Mantené actualizados los tratamientos.'],connection:['Conexión con Supabase','Proyecto productivo y configuración.']};$('pageTitle').textContent=labels[tab][0];$('pageSubtitle').textContent=labels[tab][1]}
+document.querySelectorAll('[data-tab]').forEach(el=>el.addEventListener('click',()=>goTab(el.dataset.tab)));document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>goTab(el.dataset.go)));
+function renderDashboard(){$('statPending').textContent=allBookings.filter(x=>x.status==='pending').length;$('statConfirmed').textContent=allBookings.filter(x=>x.status==='confirmed').length;$('statDesigns').textContent=allDesigns.filter(x=>x.is_available&&!x.is_sample).length;$('statServices').textContent=allServices.filter(x=>x.is_active&&!x.is_sample).length;const recent=allBookings.slice(0,5);$('recentBookings').innerHTML=recent.length?`<div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Fecha</th><th>Estado</th></tr></thead><tbody>${recent.map(b=>`<tr><td><span class="primary-cell">${escapeHTML(b.client_name)}</span><span class="sub-cell">${escapeHTML(b.option_name)}</span></td><td>${dateLabel(b.booking_date)}</td><td><span class="status ${escapeHTML(b.status)}">${statusLabel(b.status)}</span></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty"><b>Todavía no hay solicitudes</b>Cuando llegue una reserva desde la web, aparecerá aquí.</div>'}
+function whatsappNumber(phone){
+ const digits=String(phone||'').replace(/\D/g,'');
+ if(!digits)return '';
+ if(digits.startsWith('549'))return digits;
+ if(digits.startsWith('54'))return '549'+digits.slice(2).replace(/^0+/,'');
+ const local=digits.replace(/^0+/,'').replace(/^(\d{2,4})15/,'$1');
+ return '549'+local;
+}
+function whatsappBookingUrl(booking){
+ const number=whatsappNumber(booking.client_phone);
+ if(!number)return '';
+ const date=new Intl.DateTimeFormat('es-AR',{weekday:'long',day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'America/Argentina/Buenos_Aires'}).format(new Date(booking.starts_at));
+ let body;
+ if(booking.status==='confirmed')body=`Hola ${booking.client_name}, te confirmamos tu turno en Meli Nails para el ${date}. Opción: ${booking.option_name}. Duración: ${Number(booking.duration_min||0)} min. Total: ${money(booking.price)}. ¡Te esperamos! 💅`;
+ else if(booking.status==='rejected')body=`Hola ${booking.client_name}, te escribimos de Meli Nails por tu solicitud de turno. Lamentablemente no podremos confirmar ese horario. Podemos ayudarte a buscar otra fecha. 💗`;
+ else body=`Hola ${booking.client_name}, te escribimos de Meli Nails por tu solicitud de turno para el ${date}. ¿Podemos ayudarte con algo? 💗`;
+ return `https://wa.me/${number}?text=${encodeURIComponent(body)}`;
+}
+function renderBookings(){
+ const filter=$('bookingFilter').value;
+ const list=allBookings.filter(b=>filter==='all'||b.status===filter);
+ $('bookingsTable').innerHTML=list.length?`<table><thead><tr><th>Cliente</th><th>Servicio / diseño</th><th>Fecha y hora</th><th>Total</th><th>Gestión</th></tr></thead><tbody>${list.map(b=>{
+  const wa=whatsappBookingUrl(b);
+  const statusOptions=[['pending','Pendiente'],['confirmed','Confirmado'],['rejected','Rechazado'],['completed','Completado'],['cancelled','Cancelado'],['no_show','Ausente']];
+  const actions=`<div class="booking-actions">${b.status==='pending'?`<button class="btn small" onclick="changeBookingStatus('${escapeHTML(b.id)}','confirmed')">✓ Confirmar</button><button class="btn danger small" onclick="changeBookingStatus('${escapeHTML(b.id)}','rejected')">Rechazar</button>`:''}${wa?`<a class="btn secondary small" href="${escapeHTML(wa)}" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a>`:'<span class="sub-cell">Sin teléfono</span>'}</div>`;
+  return `<tr><td><span class="primary-cell">${escapeHTML(b.client_name)}</span><span class="sub-cell">${escapeHTML(b.client_phone||'Sin teléfono')}</span>${b.client_note?`<span class="sub-cell">Nota: ${escapeHTML(b.client_note)}</span>`:''}<span class="status ${escapeHTML(b.status)}">${statusLabel(b.status)}</span></td><td><span class="primary-cell">${escapeHTML(b.option_name)}</span><span class="sub-cell">${escapeHTML(b.location||'En el espacio de Meli')}</span>${Array.isArray(b.extras)&&b.extras.length?`<span class="sub-cell">Extras: ${escapeHTML(b.extras.map(x=>x.name).join(', '))}</span>`:''}${b.public_code?`<span class="sub-cell">Código: ${escapeHTML(b.public_code)}</span>`:''}</td><td>${dateLabel(b.starts_at)}<span class="sub-cell">Duración: ${Number(b.duration_min||0)} min</span></td><td><span class="primary-cell">${money(b.price)}</span><span class="sub-cell">Seña: ${money(b.deposit_amount)}</span></td><td><select class="status-select" aria-label="Cambiar estado" onchange="updateBookingStatus('${escapeHTML(b.id)}',this.value)">${statusOptions.map(([value,label])=>`<option value="${value}" ${b.status===value?'selected':''}>${label}</option>`).join('')}</select>${actions}</td></tr>`;
+ }).join('')}</tbody></table>`:'<div class="empty"><b>No hay solicitudes para mostrar</b>Probá con otro filtro o esperá nuevas reservas.</div>';
+}
+$('bookingFilter').addEventListener('change',renderBookings);
+async function updateBookingStatus(id,status){
+ if(!['pending','confirmed','completed','cancelled','rejected','no_show'].includes(status))return;
+ const {data,error}=await db.from('bookings').update({status}).eq('id',id).select('id').maybeSingle();
+ if(error){toast('No se pudo actualizar: '+error.message);await loadAll();return;}
+ if(!data){toast('No se aplicó el cambio. Revisá los permisos del administrador.');await loadAll();return;}
+ await loadAll();toast('Turno actualizado: '+statusLabel(status));
+}
+async function changeBookingStatus(id,status){
+ const labels={confirmed:'confirmar este turno',rejected:'rechazar esta solicitud'};
+ if(!labels[status]||!confirm(`¿Querés ${labels[status]}?`))return;
+ await updateBookingStatus(id,status);
+}
+window.updateBookingStatus=updateBookingStatus;window.changeBookingStatus=changeBookingStatus;
+function renderTimeBlocks(){
+ const list=allTimeBlocks.filter(item=>new Date(item.ends_at)>new Date());
+ $('timeBlocksTable').innerHTML=list.length?`<table><thead><tr><th>Fecha y horario</th><th>Motivo</th><th>Acción</th></tr></thead><tbody>${list.map(item=>`<tr><td><span class="primary-cell">${dateLabel(item.starts_at)}</span><span class="sub-cell">Hasta ${dateLabel(item.ends_at)}</span></td><td>${escapeHTML(item.reason||'No disponible')}</td><td><button class="btn danger small" onclick="removeTimeBlock('${escapeHTML(item.id)}')">Eliminar bloqueo</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty"><b>No hay horarios bloqueados</b>Los cierres manuales y turnos externos que agregues aparecerán aquí.</div>';
+}
+function openTimeBlockEditor(){
+ $('modalTitle').textContent='Bloquear horario';
+ const today=new Date();const date=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+ $('editorForm').innerHTML=`<p class="muted">Este período dejará de ofrecerse en el calendario público. Usalo para turnos coordinados por WhatsApp, descansos o cierres puntuales.</p><div class="form-grid"><div class="field"><label>Fecha</label><input name="block_date" type="date" min="${date}" required value="${date}"></div><div class="field"><label>Motivo</label><input name="reason" maxlength="120" placeholder="Ej. Turno reservado por WhatsApp"></div><div class="field"><label>Desde</label><input name="start_time" type="time" required value="09:00"></div><div class="field"><label>Hasta</label><input name="end_time" type="time" required value="10:00"></div></div><div id="editorProgress" class="editor-progress" aria-live="polite"></div><div class="modal-actions"><button type="button" class="btn secondary" id="cancelEdit">Cancelar</button><button type="submit" class="btn" id="saveEditorButton">Guardar bloqueo</button></div>`;
+ $('modalBg').classList.add('open');$('cancelEdit').addEventListener('click',closeEditor);$('editorForm').onsubmit=saveTimeBlock;
+}
+async function saveTimeBlock(event){
+ event.preventDefault();const fd=new FormData(event.currentTarget),date=String(fd.get('block_date')||''),start=String(fd.get('start_time')||''),end=String(fd.get('end_time')||''),reason=String(fd.get('reason')||'').trim();
+ if(!date||!start||!end||end<=start){toast('Revisá la fecha y el rango horario. La hora final debe ser posterior a la inicial.');return;}
+ const startsAt=new Date(`${date}T${start}:00-03:00`),endsAt=new Date(`${date}T${end}:00-03:00`);
+ if(Number.isNaN(startsAt.getTime())||Number.isNaN(endsAt.getTime())||endsAt<=startsAt){toast('El período indicado no es válido.');return;}
+ $('saveEditorButton').disabled=true;$('editorProgress').textContent='Guardando bloqueo…';
+ const {error}=await db.from('time_blocks').insert({starts_at:startsAt.toISOString(),ends_at:endsAt.toISOString(),reason:reason||'No disponible'});
+ if(error){$('saveEditorButton').disabled=false;$('editorProgress').textContent='';toast('No se pudo bloquear: '+error.message);return;}
+ closeEditor();await loadAll();toast('Horario bloqueado. Ya no se ofrecerá en la web.');
+}
+async function removeTimeBlock(id){
+ if(!confirm('¿Eliminar este bloqueo y volver a ofrecer ese horario?'))return;
+ const {data,error}=await db.from('time_blocks').delete().eq('id',id).select('id').maybeSingle();
+ if(error){toast('No se pudo eliminar: '+error.message);return;}
+ if(!data){toast('No se encontró el bloqueo o no tenés permiso para eliminarlo.');return;}
+ await loadAll();toast('Horario liberado.');
+}
+window.removeTimeBlock=removeTimeBlock;
+$('addTimeBlock').addEventListener('click',openTimeBlockEditor);
+function renderDesigns(){
+ const q=$('designSearch').value.trim().toLowerCase(),filter=$('designFilter').value;
+ const list=allDesigns.filter(d=>(filter==='all'||(filter==='active'?(d.is_available&&!d.is_sample):(!d.is_available||d.is_sample)))&&(`${d.name} ${d.category} ${d.description||''}`).toLowerCase().includes(q));
+ $('designGrid').innerHTML=list.length?list.map(d=>`<article class="product"><div class="product-img">${d.image_url?`<img src="${escapeHTML(d.image_url)}" alt="${escapeHTML(d.name)}" loading="lazy" onerror="this.remove();this.parentElement.textContent='Sin imagen'">`:'Sin imagen'}</div><div class="product-body"><b>${escapeHTML(d.name)}</b><div class="product-badges"><span class="mini-badge">${escapeHTML(d.category)}</span><span class="mini-badge">${d.is_sample?'Muestra sin publicar':d.is_available?'Publicado':'Archivado'}</span>${d.is_featured?'<span class="mini-badge">Destacado</span>':''}</div><p>Precio completo ${d.price>0?money(d.price):'Pendiente de configurar'} · ${Number(d.duration_min||60)} min</p><p>${escapeHTML(d.description||'Sin descripción')}</p><div class="product-actions"><button class="btn secondary small" onclick="editDesign('${escapeHTML(d.id)}')">Editar diseño</button><button class="btn ${d.is_sample?'secondary':d.is_available?'danger':'secondary'} small" onclick="toggleDesign('${escapeHTML(d.id)}',${d.is_sample?true:!d.is_available})">${d.is_sample?'Publicar':d.is_available?'Archivar':'Publicar'}</button></div></div></article>`).join(''):'<div class="empty" style="grid-column:1/-1"><b>No hay diseños en este filtro</b>Agregá un diseño o cambiá la búsqueda.</div>';
+}
+$('designSearch').addEventListener('input',renderDesigns);$('designFilter').addEventListener('change',renderDesigns);
+function renderServices(){$('servicesTable').innerHTML=allServices.length?`<table><thead><tr><th>Servicio</th><th>Duración</th><th>Precio</th><th>Visibilidad</th><th>Acciones</th></tr></thead><tbody>${allServices.map(s=>`<tr><td class="primary-cell">${escapeHTML(s.name)} ${s.is_sample?'<small>(muestra)</small>':''}</td><td>${Number(s.duration_min)} min</td><td class="primary-cell">${money(s.price)}</td><td><span class="status ${s.is_active?'confirmed':'cancelled'}">${s.is_active?'Activo':'Archivado'}</span></td><td><div class="actions"><button class="btn secondary small" onclick="editService('${escapeHTML(s.id)}')">Editar</button><button class="btn ${s.is_active?'danger':'secondary'} small" onclick="toggleService('${escapeHTML(s.id)}',${!s.is_active})">${s.is_active?'Archivar':'Publicar'}</button></div></td></tr>`).join('')}</tbody></table>`:'<div class="empty"><b>No hay servicios</b>Agregá servicios.</div>'}
+function openEditor(kind,item=null){
+ const isDesign=kind==='design',editing=!!item;
+ $('modalTitle').textContent=(editing?'Editar ':'Nuevo ')+(isDesign?'diseño':'servicio');
+ const active=isDesign?item?.is_available!==false:item?.is_active!==false;
+ const common=`<label class="checkline"><input name="active" type="checkbox" ${active?'checked':''}> Visible en la web pública</label>`;
+ let html;
+ if(isDesign){
+  const categories=[['francesitas','Francesitas'],['soft_gel','Soft gel'],['kapping','Kapping'],['nail_art','Nail art'],['minimalistas','Minimalistas'],['elaborados','Elaborados'],['otros','Otros']];
+  const currentCategory=item?.category||'minimalistas';
+  html=`<input type="hidden" name="id" value="${escapeHTML(item?.id||'')}">
+   <div class="field"><label>Fotografía del diseño</label>
+    <div class="upload-drop" id="designDrop" role="button" tabindex="0" aria-label="Seleccionar o arrastrar una imagen">
+     <div class="image-preview" id="designPreview">${item?.image_url?`<img src="${escapeHTML(item.image_url)}" alt="Vista previa del diseño">`:'Vista previa'}</div>
+     <div class="upload-copy"><b>Subí una foto del diseño</b><span>Arrastrá una imagen aquí o seleccionála desde tu dispositivo. JPG, PNG o WebP · máximo 5 MB.</span><button type="button" class="btn secondary small" id="chooseDesignImage">Elegir imagen</button><span id="selectedFileName" style="margin-top:6px">${item?.image_url?'Imagen actual':'No seleccionaste una imagen nueva'}</span></div>
+    </div>
+    <input id="designImageFile" name="image_file" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+    <div class="upload-help">La imagen se guarda en el bucket público <b>media</b> de Supabase. También podés conservar o pegar una URL externa.</div>
+   </div>
+   <div class="field"><label>URL alternativa de imagen</label><input id="designImageUrl" name="image_url" type="url" inputmode="url" autocomplete="url" placeholder="https://servidor.com/imagen.jpg" value="${escapeHTML(item?.image_url||'')}"></div>
+   <div class="form-grid"><div class="field"><label>Nombre del diseño</label><input name="name" required maxlength="80" placeholder="Ej. Francesita perlada" value="${escapeHTML(item?.name||'')}"></div>
+    <div class="field"><label>Categoría</label><select name="category" required>${categories.map(([value,label])=>`<option value="${value}" ${currentCategory===value?'selected':''}>${label}</option>`).join('')}</select></div>
+    <div class="field"><label>Precio completo del diseño (ARS)</label><input name="price" type="number" min="1" step="1" required value="${Number(item?.price||0)}"></div>
+    <div class="field"><label>Duración estimada (minutos)</label><input name="duration" type="number" min="15" max="480" step="15" required value="${Number(item?.duration_min||60)}"></div>
+    <div class="field"><label>Destacar en la galería</label><label class="checkline"><input name="featured" type="checkbox" ${item?.is_featured?'checked':''}> Mostrar como destacado</label></div></div>
+   <div class="field"><label>Descripción</label><textarea name="description" rows="3" maxlength="400" placeholder="Describí el estilo, acabado o detalles del diseño">${escapeHTML(item?.description||'')}</textarea></div>${common}`;
+ }else{
+  html=`<input type="hidden" name="id" value="${escapeHTML(item?.id||'')}"><div class="field"><label>Nombre del servicio</label><input name="name" required maxlength="80" value="${escapeHTML(item?.name||'')}"></div><div class="field"><label>Descripción</label><input name="description" maxlength="200" value="${escapeHTML(item?.description||'')}"></div><div class="form-grid"><div class="field"><label>Precio (ARS)</label><input name="price" type="number" min="0" step="1" required value="${Number(item?.price||0)}"></div><div class="field"><label>Duración (minutos)</label><input name="duration" type="number" min="15" max="480" step="15" required value="${Number(item?.duration_min||60)}"></div></div>${common}`;
+ }
+ $('editorForm').innerHTML=html+`<div id="editorProgress" class="editor-progress" aria-live="polite"></div><div class="modal-actions"><button type="button" class="btn secondary" id="cancelEdit">Cancelar</button><button type="submit" class="btn" id="saveEditorButton">${editing?'Guardar cambios':'Crear '+(isDesign?'diseño':'servicio')}</button></div>`;
+ $('modalBg').classList.add('open');
+ $('cancelEdit').addEventListener('click',closeEditor);
+ if(isDesign)wireDesignUploader(item?.image_url||'');
+ $('editorForm').onsubmit=event=>saveEditor(event,kind);
+}
+function wireDesignUploader(currentUrl=''){
+ const drop=$('designDrop'),input=$('designImageFile'),preview=$('designPreview'),choose=$('chooseDesignImage'),fileName=$('selectedFileName'),urlInput=$('designImageUrl');
+ if(!drop||!input)return;
+ const showPreview=src=>{
+  preview.replaceChildren();
+  if(!src){preview.textContent='Vista previa';return;}
+  const img=document.createElement('img');img.alt='Vista previa del diseño';img.loading='eager';img.referrerPolicy='no-referrer';
+  img.onload=()=>{preview.dataset.state='loaded';};
+  img.onerror=()=>{preview.dataset.state='error';preview.textContent='No se pudo cargar. Usá un enlace directo a JPG, PNG o WebP.';};
+  preview.appendChild(img);img.src=src;
+ };
+ const normalizeImageLink=value=>{
+  let raw=String(value||'').trim();if(!raw)return '';
+  try{
+   const u=new URL(raw);
+   if(!['https:','http:'].includes(u.protocol))throw new Error('El enlace debe comenzar con https://');
+   if((u.hostname==='drive.google.com'||u.hostname==='www.drive.google.com')){
+    const match=u.pathname.match(/\/file\/d\/([^/]+)/);const id=match?.[1]||u.searchParams.get('id');
+    if(id)return `https://drive.google.com/uc?export=view&id=${encodeURIComponent(id)}`;
+   }
+   if(u.hostname==='dropbox.com'||u.hostname==='www.dropbox.com'){
+    u.searchParams.delete('dl');u.searchParams.set('raw','1');return u.href;
+   }
+   return u.href;
+  }catch(error){throw new Error('Pegá una URL pública válida que empiece con https://');}
+ };
+ choose.addEventListener('click',()=>input.click());
+ drop.addEventListener('click',event=>{if(event.target!==choose)input.click()});
+ drop.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();input.click()}});
+ input.addEventListener('change',()=>{const file=input.files?.[0];if(!file)return;showPreview(URL.createObjectURL(file));fileName.textContent=file.name;urlInput.value='';});
+ ['dragenter','dragover'].forEach(type=>drop.addEventListener(type,event=>{event.preventDefault();drop.classList.add('dragover')}));
+ ['dragleave','drop'].forEach(type=>drop.addEventListener(type,event=>{event.preventDefault();drop.classList.remove('dragover')}));
+ drop.addEventListener('drop',event=>{const file=event.dataTransfer?.files?.[0];if(!file)return;const transfer=new DataTransfer();transfer.items.add(file);input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));});
+ const previewUrl=()=>{if(input.files?.length)return;try{const url=normalizeImageLink(urlInput.value.trim()||currentUrl);showPreview(url);fileName.textContent=url?'Verificando enlace de imagen…':'No seleccionaste una imagen nueva';}catch(error){showPreview('');fileName.textContent=error.message;}};
+ urlInput.addEventListener('input',previewUrl);urlInput.addEventListener('change',previewUrl);urlInput.addEventListener('paste',()=>setTimeout(previewUrl,0));
+ if(currentUrl)showPreview(currentUrl);
+}
+function closeEditor(){$('modalBg').classList.remove('open');$('editorForm').innerHTML=''}
+$('modalClose').addEventListener('click',closeEditor);$('modalBg').addEventListener('click',e=>{if(e.target===$('modalBg'))closeEditor()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeEditor()});
+async function uploadDesignImage(file){
+ const allowed={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'};
+ if(!allowed[file.type])throw new Error('Formato inválido. Usá JPG, PNG o WebP.');
+ if(file.size>5*1024*1024)throw new Error('La imagen supera el límite de 5 MB.');
+ const token=(window.crypto?.randomUUID?.()||`${Date.now()}-${Math.random().toString(36).slice(2)}`);
+ const path=`designs/${Date.now()}-${token}.${allowed[file.type]}`;
+ const {data,error}=await db.storage.from('media').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type});
+ if(error)throw error;
+ const {data:{publicUrl}}=db.storage.from('media').getPublicUrl(data.path);
+ return publicUrl;
+}
+async function saveEditor(event,kind){
+ event.preventDefault();
+ const form=event.currentTarget,fd=new FormData(form),id=String(fd.get('id')||''),active=fd.get('active')==='on';
+ let table,payload,uploadedUrl='';
+ if(kind==='design'){
+  table='designs';
+  const file=fd.get('image_file');
+  let imageUrl=String(fd.get('image_url')||'').trim();
+  try{
+   if(file&&file.size){$('saveEditorButton').disabled=true;$('editorProgress').textContent='Subiendo fotografía a Supabase Storage…';imageUrl=await uploadDesignImage(file);uploadedUrl=imageUrl;}
+   else if(imageUrl){
+    imageUrl=normalizeImageLink(imageUrl);
+    $('saveEditorButton').disabled=true;$('editorProgress').textContent='Comprobando que el enlace sea una imagen accesible…';
+    await new Promise((resolve,reject)=>{const probe=new Image();probe.referrerPolicy='no-referrer';probe.onload=resolve;probe.onerror=()=>reject(new Error('El enlace no entrega una imagen visible. Usá un enlace directo y público a JPG, PNG o WebP; no un enlace a una página de publicación.'));probe.src=imageUrl;});
+   }
+  }catch(error){$('editorProgress').textContent='';$('saveEditorButton').disabled=false;toast('No se pudo usar la imagen: '+error.message);return;}
+  payload={name:String(fd.get('name')||'').trim(),category:String(fd.get('category')||'minimalistas'),description:String(fd.get('description')||'').trim(),image_url:imageUrl,price:Math.max(0,Number(fd.get('price')||0)),duration_min:Number(fd.get('duration')||60),is_available:active,is_featured:fd.get('featured')==='on',is_sample:false};
+ }else{
+  table='services';payload={name:String(fd.get('name')||'').trim(),description:String(fd.get('description')||'').trim(),price:Math.max(0,Number(fd.get('price')||0)),duration_min:Number(fd.get('duration')||60),is_active:active,is_sample:false,sort_order:id?(allServices.find(x=>x.id===id)?.sort_order||100):allServices.length+1};
+ }
+ if(!payload.name||!Number.isFinite(payload.price)||payload.price<0||(kind==='design'&&(!Number.isInteger(payload.duration_min)||payload.duration_min<15||payload.duration_min>480))){$('saveEditorButton').disabled=false;toast('Completá los campos obligatorios y verificá precio/duración.');return;}
+ $('saveEditorButton').disabled=true;$('editorProgress').textContent='Guardando información…';
+ const query=id?db.from(table).update(payload).eq('id',id):db.from(table).insert(payload);
+ const {error}=await query;
+ if(error){$('saveEditorButton').disabled=false;$('editorProgress').textContent='';toast('No se pudo guardar: '+error.message);if(uploadedUrl){const path=uploadedUrl.split('/storage/v1/object/public/media/')[1];if(path)await db.storage.from('media').remove([decodeURIComponent(path)]);}return;}
+ closeEditor();await loadAll();toast(kind==='design'?'Diseño guardado correctamente.':'Servicio guardado.');
+}
+window.editDesign=id=>{const item=allDesigns.find(x=>x.id===id);if(item)openEditor('design',item)};window.editService=id=>{const item=allServices.find(x=>x.id===id);if(item)openEditor('service',item)};
+async function setActive(table,id,active,label){const field=table==='designs'?'is_available':'is_active';const {error}=await db.from(table).update({[field]:active,is_sample:false}).eq('id',id);if(error){toast('No se pudo cambiar: '+error.message);return}await loadAll();toast(label+(active?' publicado.':' archivado.'))}window.toggleDesign=(id,active)=>setActive('designs',id,active,'Diseño');window.toggleService=(id,active)=>setActive('services',id,active,'Servicio');
+$('addDesign').addEventListener('click',()=>openEditor('design'));$('addService').addEventListener('click',()=>openEditor('service'));
+initialize();</script>
+</body>
+</html>

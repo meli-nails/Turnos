@@ -15,7 +15,8 @@
 <div id="loginScreen" class="login-wrap"><section class="login-card"><div class="brand">Meli Nails</div><div class="brand-sub">BEAUTY STUDIO · ADMIN</div><h1>Panel de administración</h1><p>Ingresá con la cuenta administradora de Meli Nails.</p><div id="configWarning" class="warning hidden"></div><form id="loginForm"><div class="field"><label for="loginEmail">Correo electrónico</label><input id="loginEmail" type="email" autocomplete="username" required></div><div class="field"><label for="loginPassword">Contraseña</label><input id="loginPassword" type="password" autocomplete="current-password" required></div><button id="loginButton" class="btn full" type="submit">Ingresar al panel</button><div id="loginError" class="error" role="alert"></div></form><div class="hint">El acceso requiere un usuario de Supabase Authentication autorizado en la tabla <b>admins</b>. No compartas tu contraseña.</div></section></div>
 <div id="adminApp" class="app hidden"><aside class="sidebar"><div class="side-brand"><div class="brand">Meli Nails</div><div class="brand-sub">BEAUTY STUDIO · ADMIN</div></div><div class="side-label">GESTIÓN</div><nav class="nav"><button class="active" data-tab="dashboard">⌂　Resumen</button><button data-tab="bookings">▦　Solicitudes</button><button data-tab="designs">✧　Diseños</button><button data-tab="services">♡　Servicios</button><button data-tab="connection">⚙　Conexión</button></nav><div class="side-bottom"><div id="userEmail" class="user-email"></div><button id="logoutButton" class="btn secondary full">Cerrar sesión</button></div></aside>
 <div class="mobilebar"><div class="brand">Meli Nails</div><button id="mobileLogout" class="btn secondary small">Salir</button></div><nav class="mobile-nav"><button class="active" data-tab="dashboard">Resumen</button><button data-tab="bookings">Turnos</button><button data-tab="designs">Diseños</button><button data-tab="services">Servicios</button><button data-tab="connection">Conexión</button></nav>
-<main class="main"><header class="topline"><div><div class="eyebrow">Meli Nails · Beauty Studio</div><h1 id="pageTitle">Resumen general</h1><p id="pageSubtitle">Una mirada rápida a la actividad de tu negocio.</p></div><div class="top-actions"><span id="connectionPill" class="pill">Conectando</span><button id="refreshButton" class="btn secondary small">↻ Actualizar</button></div></header>
+<main class="main">
+<div id="dataLoadBanner" role="status" aria-live="polite" style="display:none;margin:0 0 18px;padding:14px 16px;border:1px solid #e6c8d0;border-radius:14px;background:#fff4f6;color:#754454;white-space:normal;overflow-wrap:anywhere"></div><header class="topline"><div><div class="eyebrow">Meli Nails · Beauty Studio</div><h1 id="pageTitle">Resumen general</h1><p id="pageSubtitle">Una mirada rápida a la actividad de tu negocio.</p></div><div class="top-actions"><span id="connectionPill" class="pill">Conectando</span><button id="refreshButton" class="btn secondary small">↻ Actualizar</button></div></header>
 <section id="section-dashboard" class="panel-section active"><div class="stats"><article class="stat"><small>Solicitudes pendientes</small><strong id="statPending">—</strong><span>Esperando confirmación</span></article><article class="stat"><small>Turnos confirmados</small><strong id="statConfirmed">—</strong><span>Reservas aceptadas</span></article><article class="stat"><small>Diseños activos</small><strong id="statDesigns">—</strong><span>En el catálogo público</span></article><article class="stat"><small>Servicios activos</small><strong id="statServices">—</strong><span>Disponibles para reservar</span></article></div><div class="grid-two"><div class="card"><div class="card-head"><div><h2>Solicitudes recientes</h2><p>Últimos pedidos recibidos desde la web.</p></div><button class="btn secondary small" data-go="bookings">Ver todas</button></div><div id="recentBookings"></div></div><div class="card"><div class="card-head"><div><h2>Accesos rápidos</h2><p>Administrá el contenido del sitio.</p></div></div><div class="quick-actions"><button class="quick" data-go="designs"><b>＋ Agregar diseño</b><span>Publicá un diseño con precio e imagen.</span></button><button class="quick" data-go="services"><b>＋ Agregar servicio</b><span>Actualizá tratamientos y precios.</span></button><button class="quick" data-go="bookings"><b>▦ Revisar turnos</b><span>Confirmá o actualizá solicitudes.</span></button><button class="quick" data-go="connection"><b>✓ Ver conexión</b><span>Estado de Supabase.</span></button></div></div></div></section>
 <section id="section-bookings" class="panel-section"><div class="card"><div class="card-head"><div><h2>Solicitudes de turnos</h2><p>Las solicitudes quedan registradas antes de abrir WhatsApp.</p></div><div class="filters"><select id="bookingFilter"><option value="all">Todos los estados</option><option value="pending">Pendientes</option><option value="confirmed">Confirmados</option><option value="completed">Completados</option><option value="rejected">Rechazados</option><option value="cancelled">Cancelados</option><option value="no_show">Ausentes</option></select><button id="addTimeBlock" class="btn secondary small" type="button">＋ Bloquear horario</button></div></div><div id="bookingsTable" class="table-wrap"></div></div><div class="card"><div class="card-head"><div><h2>Horarios bloqueados</h2><p>Turnos externos, descansos o cierres puntuales.</p></div></div><div id="timeBlocksTable" class="table-wrap"></div></div></section>
 <section id="section-designs" class="panel-section"><div class="card"><div class="card-head"><div><h2>Catálogo de diseños</h2><p>Los diseños activos se muestran en la web pública.</p></div><button id="addDesign" class="btn">＋ Nuevo diseño</button></div><div class="filters" style="margin-bottom:14px"><input id="designSearch" type="search" placeholder="Buscar diseño o categoría..."><select id="designFilter"><option value="all">Todos</option><option value="active">Activos</option><option value="inactive">Archivados / muestra</option></select></div><div id="designGrid" class="product-grid"></div></div></section>
@@ -46,42 +47,100 @@ async function initialize(){
 async function activateAdmin(session){if(!db||!session?.user)return;currentUser=session.user;setConnection('Verificando','Comprobando permiso administrativo...');const {data,error}=await db.from('admins').select('user_id').eq('user_id',currentUser.id).maybeSingle();if(error){console.error(error);showLogin('No se pudo validar el permiso: '+error.message);setConnection('Error','Revisá la tabla admins y sus políticas RLS.');return;}if(!data){await db.auth.signOut();showLogin('El usuario inició sesión, pero no está autorizado en admins.');setConnection('Sin autorización','Agregá su user_id en la tabla admins.');return;}isAdmin=true;showApp();setConnection('Conectado','Sesión autenticada y autorizada.');await loadAll();}
 $('loginForm').addEventListener('submit',async event=>{event.preventDefault();if(!db)return;const button=$('loginButton');button.disabled=true;button.textContent='Ingresando...';$('loginError').textContent='';const {data,error}=await db.auth.signInWithPassword({email:$('loginEmail').value.trim(),password:$('loginPassword').value});button.disabled=false;button.textContent='Ingresar al panel';if(error){$('loginError').textContent=error.message;return;}await activateAdmin(data.session)});
 async function logout(){if(db)await db.auth.signOut();currentUser=null;isAdmin=false;showLogin()}$('logoutButton').addEventListener('click',logout);$('mobileLogout').addEventListener('click',logout);
+function showDataLoadMessage(message, visible=true){
+ const banner=$('dataLoadBanner');
+ if(!banner)return;
+ banner.textContent=message||'';
+ banner.style.display=visible?'block':'none';
+}
 async function loadAll(){
  if(!isAdmin||!db)return;
- $('refreshButton').disabled=true;
- const targets=[
-  {key:'bookings',run:()=>db.from('bookings').select('*,clients(full_name,phone)').order('starts_at',{ascending:false})},
-  {key:'designs',run:()=>db.from('designs').select('*').order('created_at',{ascending:false})},
-  {key:'services',run:()=>db.from('services').select('*').order('sort_order',{ascending:true})},
-  {key:'time_blocks',run:()=>db.from('time_blocks').select('*').order('starts_at',{ascending:true})}
+ const button=$('refreshButton');
+ if(button)button.disabled=true;
+ showDataLoadMessage('Cargando datos del negocio…');
+ setConnection('Cargando','Consultando reservas, diseños, servicios y horarios.');
+ const queries=[
+  {key:'bookings',label:'Reservas',run:()=>db.from('bookings').select('*,clients(full_name,phone)').order('starts_at',{ascending:false})},
+  {key:'designs',label:'Diseños',run:()=>db.from('designs').select('*').order('created_at',{ascending:false})},
+  {key:'services',label:'Servicios',run:()=>db.from('services').select('*').order('sort_order',{ascending:true})},
+  {key:'time_blocks',label:'Horarios bloqueados',run:()=>db.from('time_blocks').select('*').order('starts_at',{ascending:true})}
  ];
- const results=await Promise.all(targets.map(async item=>{
-  try{return {key:item.key,...await item.run()}}
-  catch(error){return {key:item.key,error}}
- }));
- $('refreshButton').disabled=false;
  const errors=[];
- for(const result of results){
-  if(result.error){errors.push(result.key+': '+(result.error.message||String(result.error)));console.error('Meli Nails admin query '+result.key,result.error);continue;}
-  const rows=result.data||[];
-  if(result.key==='bookings')allBookings=rows.map(row=>{
-   const names=Array.isArray(row.service_names)&&row.service_names.length?row.service_names.filter(Boolean):(row.service_name&&row.service_name!=='Diseño independiente'?[row.service_name]:[]);
-   const optionName=[...names,...(row.design_name?[row.design_name]:[])].filter(Boolean).join(' + ')||row.service_name||'Opción sin nombre';
-   return {...row,client_name:row.client_name||row.clients?.full_name||'Cliente',client_phone:row.clients?.phone||'',option_name,client_note:row.client_notes||''};
-  });
-  if(result.key==='designs')allDesigns=rows;
-  if(result.key==='services')allServices=rows;
-  if(result.key==='time_blocks')allTimeBlocks=rows;
- }
- renderDashboard();renderBookings();renderDesigns();renderServices();renderTimeBlocks();
- if(errors.length){
-  const message='Datos parciales. '+errors.join(' | ');
-  setConnection('Con errores',message);
-  toast(message);
- }else{
-  setConnection('Conectado','Datos actualizados: '+new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}));
+ try{
+  const results=await Promise.all(queries.map(async query=>{
+   try{
+    const response=await query.run();
+    if(response.error)throw response.error;
+    if(!Array.isArray(response.data))throw new Error('La respuesta no contiene una lista de datos.');
+    return {key:query.key,label:query.label,data:response.data};
+   }catch(error){return {key:query.key,label:query.label,data:[],error};}
+  }));
+  for(const result of results){
+   if(result.error){
+    errors.push(result.label+': '+(result.error.message||String(result.error)));
+    console.error('[Meli Nails Admin] '+result.label,result.error);
+    continue;
+   }
+   const rows=result.data;
+   if(result.key==='bookings'){
+    allBookings=rows.map(row=>{
+     const client=Array.isArray(row.clients)?row.clients[0]:row.clients;
+     const names=Array.isArray(row.service_names)?row.service_names.filter(Boolean):(row.service_name&&row.service_name!=='Diseño independiente'?[row.service_name]:[]);
+     const optionName=[...names,...(row.design_name?[row.design_name]:[])].filter(Boolean).join(' + ')||row.service_name||'Opción sin nombre';
+     return {...row,client_name:row.client_name||client?.full_name||'Cliente',client_phone:client?.phone||row.client_phone||'',option_name:optionName,client_note:row.client_notes||''};
+    });
+   }else if(result.key==='designs')allDesigns=rows;
+   else if(result.key==='services')allServices=rows;
+   else if(result.key==='time_blocks')allTimeBlocks=rows;
+  }
+  const renderers=[
+   ['Resumen',renderDashboard,'recentBookings'],
+   ['Turnos',renderBookings,'bookingsTable'],
+   ['Diseños',renderDesigns,'designGrid'],
+   ['Servicios',renderServices,'servicesTable'],
+   ['Horarios bloqueados',renderTimeBlocks,'timeBlocksTable']
+  ];
+  for(const [label,render,target] of renderers){
+   try{render();}
+   catch(error){
+    const detail=error?.message||String(error);
+    errors.push(label+' (visualización): '+detail);
+    console.error('[Meli Nails Admin] Error al mostrar '+label,error);
+    const el=$(target);
+    if(el)el.innerHTML='<div class="empty"><b>No se pudo mostrar '+escapeHTML(label.toLowerCase())+'</b>'+escapeHTML(detail)+'</div>';
+   }
+  }
+  const counts='Reservas: '+allBookings.length+' · Diseños: '+allDesigns.length+' · Servicios: '+allServices.length;
+  if(errors.length){
+   const detail='Carga parcial. '+errors.join(' | ');
+   showDataLoadMessage(detail);
+   setConnection('Con errores',detail);
+   console.error('[Meli Nails Admin] Diagnóstico de carga',errors);
+  }else{
+   showDataLoadMessage('Datos cargados correctamente. '+counts,false);
+   setConnection('Conectado',counts+' · Actualizado '+new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}));
+  }
+ }catch(error){
+  const detail=error?.message||String(error);
+  showDataLoadMessage('No se pudieron cargar los datos: '+detail);
+  setConnection('Error de carga',detail);
+  console.error('[Meli Nails Admin] Error inesperado al cargar',error);
+ }finally{
+  if(button)button.disabled=false;
  }
 }
+window.addEventListener('error',event=>{
+ const detail=event.message||'Error JavaScript desconocido';
+ showDataLoadMessage('Error JavaScript: '+detail);
+ setConnection('Error JavaScript',detail);
+ console.error('[Meli Nails Admin] Error JavaScript',event.error||event);
+});
+window.addEventListener('unhandledrejection',event=>{
+ const detail=event.reason?.message||String(event.reason||'Promesa rechazada');
+ showDataLoadMessage('Error inesperado: '+detail);
+ setConnection('Error inesperado',detail);
+ console.error('[Meli Nails Admin] Promesa rechazada',event.reason);
+});
 $('refreshButton').addEventListener('click',loadAll);
 function goTab(tab){activeTab=tab;document.querySelectorAll('[data-tab]').forEach(el=>el.classList.toggle('active',el.dataset.tab===tab));document.querySelectorAll('.panel-section').forEach(el=>el.classList.toggle('active',el.id==='section-'+tab));const labels={dashboard:['Resumen general','Una mirada rápida a la actividad de tu negocio.'],bookings:['Solicitudes de turnos','Revisá y administrá las reservas registradas.'],designs:['Catálogo de diseños','Gestioná diseños, imágenes, precios y duración.'],services:['Servicios y precios','Mantené actualizados los tratamientos.'],connection:['Conexión con Supabase','Estado del proyecto y configuración.']};$('pageTitle').textContent=labels[tab][0];$('pageSubtitle').textContent=labels[tab][1]}
 document.querySelectorAll('[data-tab]').forEach(el=>el.addEventListener('click',()=>goTab(el.dataset.tab)));document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>goTab(el.dataset.go)));
